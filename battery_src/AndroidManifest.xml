@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:sharedUserId="android.uid.system"
+    android:versionCode="29"
+    android:versionName="1.2.9"
+    android:compileSdkVersion="36"
+    android:compileSdkVersionCodename="16"
+    package="com.oplus.battery"
+    platformBuildVersionCode="36"
+    platformBuildVersionName="16">
+    <uses-sdk
+        android:minSdkVersion="36"
+        android:targetSdkVersion="36"
+        android:maxSdkVersion="36"/>
+    <queries>
+        <provider android:authorities="com.oplus.framework.network.drs.sdk.track;com.oplus.statistics.provider;com.oplus.statistics.support.provider"/>
+        <package android:name="com.coloros.assistantscreen"/>
+        <package android:name="com.oplus.metis"/>
+        <package android:name="com.oplus.pantanal.ums"/>
+        <package android:name="com.oplus.framework.network.drs"/>
+        <package android:name="com.oplus.utrace.agent"/>
+    </queries>
+    <permission
+        android:name="com.oplus.startupapp.permission.OTA_INIT_SERVICE"
+        android:protectionLevel="signatureOrSystem"/>
+    <permission
+        android:name="com.oplus.battery.permission.REMOTE_SERVICE"
+        android:protectionLevel="normal"/>
+    <permission
+        android:name="oplus.intent.action.settings.APP_FORZEN_OPLUS_SETTINGS"
+        android:protectionLevel="normal"/>
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="com.oplus.permission.safe.PERSISTENT"/>
+    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CREATE_USERS"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER"/>
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"/>
+    <uses-permission android:name="android.permission.MANAGE_APP_OPS_MODES"/>
+    <uses-permission android:name="android.permission.NETWORK_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS"/>
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"/>
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="oplus.permission.OPLUS_COMPONENT_SAFE"/>
+    <uses-permission android:name="com.oplus.permission.safe.LOG"/>
+    <uses-permission android:name="com.oplus.permission.safe.APP_MANAGER"/>
+    <uses-permission android:name="com.oplus.athena.permission.STATE_PROVIDER"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+    <uses-permission android:name="com.oplus.permission.safe.AI_APP"/>
+    <uses-permission android:name="android.permission.BATTERY_STATS"/>
+    <uses-permission android:name="com.rm.gt.mode.permission.GTModeScreenRateReceiver"/>
+    <uses-permission android:name="com.oplus.permission.safe.SAFE_MANAGER"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.TETHER_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.TURN_SCREEN_ON"/>
+    <uses-permission android:name="android.permission.KILL_UID"/>
+    <uses-permission android:name="android.permission.MODIFY_DAY_NIGHT_MODE"/>
+    <uses-permission android:name="android.permission.STATUS_BAR"/>
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="com.oplus.permission.safe.SATELLITE_COMMUNICATION"/>
+    <uses-permission android:name="com.oplus.permission.safe.CONNECTIVITY"/>
+    <uses-permission android:name="oplus.permission.OPLUS_CMD_LOG"/>
+    <uses-permission android:name="android.permission.CHANGE_APP_IDLE_STATE"/>
+    <uses-permission android:name="android.permission.MANAGE_USERS"/>
+    <uses-permission android:name="com.oplus.permission.safe.GAME"/>
+    <uses-permission android:name="com.oplus.permission.safe.SECURITY"/>
+    <uses-permission android:name="com.oplus.metis.factdata.permission.DATABASE"/>
+    <permission
+        android:name="com.oplus.battery.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="com.oplus.battery.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"/>
+    <uses-permission android:name="com.oplus.permission.safe.ASSISTANT"/>
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher_pwrmgr"
+        android:name="com.oplus.battery.OplusBatteryApp"
+        android:allowBackup="false"
+        android:supportsRtl="true"
+        android:extractNativeLibs="false"
+        android:resizeableActivity="true"
+        android:defaultToDeviceProtectedStorage="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:enableOnBackInvokedCallback="true">
+        <provider
+            android:name="com.oplus.modulehub.card.OplusBatteryCardProvider"
+            android:permission="com.oplus.permission.safe.ASSISTANT"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.oplus.modulehub.card"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="pantanal.card.action.RPKCARD_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="pantanal.card.provider.array"
+                android:resource="@array/battery_ui_card_array"/>
+            <meta-data
+                android:name="android.card.provider.middle.battery"
+                android:resource="@xml/battery_ui_card"/>
+            <meta-data
+                android:name="android.card.provider.small.battery"
+                android:resource="@xml/battery_ui_card_small"/>
+        </provider>
+        <activity
+            android:theme="@style/AppNoTitleTheme"
+            android:name="com.oplus.powermanager.fuelgaue.PowerConsumptionActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="com.oplus.action.powermanager"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name="com.oplus.powermanager.fuelgaue.GAJumpActivity"
+            android:exported="true"
+            android:process=":ui">
+            <intent-filter>
+                <action android:name="com.oplus.action.GAJumpActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/HotSpotTipsTheme"
+            android:name="com.oplus.powermanager.powersave.HotSpotTipsActivity"
+            android:exported="false"
+            android:process=":ui"/>
+        <activity
+            android:theme="@style/AppNoTitleTheme"
+            android:name="com.oplus.powermanager.fuelgaue.PowerUsageModelActivity"
+            android:permission="com.oplus.permission.safe.SETTINGS"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.power_control"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme"
+            android:name="com.oplus.powermanager.fuelgaue.PowerControlActivity"
+            android:exported="false"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.BatteryChargeActivity"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.BATTERY_CHARGE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.CustomizePowerSavingActivity"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.CUSTOMIZE_POWER_SAVING"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.BatteryHealthActivity"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.BATTERY_HEALTH"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.BatteryHealthSecretCodeActivity"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="behind"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.BATTERY_HEALTH_SECRET_CODE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/Theme.Panel.Reminder"
+            android:name="com.oplus.powermanager.superpowersave.SuperPowerSaveReminderActivity"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:process=":ui"
+            android:excludeFromRecents="true"
+            android:screenOrientation="behind"
+            android:configChanges="layoutDirection|smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale"
+            android:noHistory="true"
+            android:uiOptions="none"
+            android:resizeableActivity="false">
+            <intent-filter>
+                <action android:name="oplus.intent.action.SuperPowerSaveReminderActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.PowerSaveActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.PowerSaveActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/TranslucentTheme"
+            android:name="com.oplus.powermanager.fuelgaue.WirelessChargingReminderActivity"
+            android:exported="false"
+            android:process=":ui"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:configChanges="layoutDirection|smallestScreenSize|screenSize|screenLayout|keyboardHidden|locale"
+            android:uiOptions="none"
+            android:resizeableActivity="false">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <meta-data
+                android:name="oplus.compat.features.disable"
+                android:value="orientation"/>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.ScreenSaveScene"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:screenOrientation="nosensor">
+            <intent-filter>
+                <action android:name="com.oplus.battery.ScreenSaveScene"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.PerformanceModeActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="com.oplus.battery.PerformanceModeActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.WirelessReverseChargingActivity"
+            android:permission="com.oplus.permission.safe.SAFE_MANAGER"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:screenOrientation="nosensor"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.WirelessReverseChargingActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragment"
+            android:name="com.oplus.powermanager.fuelgaue.PowerSaveDetailsActivity"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:process=":ui"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="oplus.intent.action.PowerSaveSecondActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:name="com.oplus.performance.TransparentActivity"
+            android:exported="false"
+            android:process=":ui"
+            android:screenOrientation="behind"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/HotSpotTipsTheme"
+            android:name="com.oplus.powermanager.powersave.SuperPowersaveAutoCancelActivity"
+            android:exported="false"
+            android:process=":ui"
+            android:configChanges="smallestScreenSize|screenSize|screenLayout|orientation|keyboardHidden|locale"/>
+        <meta-data
+            android:name="IgnoreGmsUserSet"
+            android:value="true"/>
+        <meta-data
+            android:name="AppCode"
+            android:value="20089"/>
+        <meta-data
+            android:name="versionCommit"
+            android:value="8ab8fd2"/>
+        <meta-data
+            android:name="versionDate"
+            android:value="260908"/>
+        <meta-data
+            android:name="oplus.support.options"
+            android:value="@string/oplus_support_value"/>
+        <meta-data
+            android:name="com.oplus.ocs.card.AUTH_CODE"
+            android:value="ADBEAiAs8qWlJp/NEuK1uCWkkiPvTLKMiwtef9NFiz+feUUgDAIgNiSZf8INgmUNzTiEXPSgxOp3gBUZYiZ7TuiT6Hw7crtqi6wF"/>
+        <meta-data
+            android:name="theme_version_metadata"
+            android:value="700.001.000"/>
+        <meta-data
+            android:name="color_material_enable"
+            android:value="true"/>
+        <meta-data
+            android:name="br"
+            android:value="0,1"/>
+        <meta-data
+            android:name="area"
+            android:value="export,gdpr"/>
+        <meta-data
+            android:name="compatibility"
+            android:value="full"/>
+        <meta-data
+            android:name="device_type"
+            android:value="tablet"/>
+        <meta-data
+            android:name="application_do_not_disable"
+            android:value="true"/>
+        <meta-data
+            android:name="AppCode"
+            android:value="20089"/>
+        <provider
+            android:name="com.oplus.powermanager.fuelgaue.PowerSearchIndexablesProvider"
+            android:permission="android.permission.READ_SEARCH_INDEXABLES"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:authorities="com.oplus.battery"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER"/>
+            </intent-filter>
+            <meta-data
+                android:name="oplus.setting.search_index_mode"
+                android:value="2"/>
+            <meta-data
+                android:name="oplus.setting.search_index_mode_2_type"
+                android:value="1"/>
+        </provider>
+        <provider
+            android:name="com.oplus.powermanager.provider.VoiceProvider"
+            android:permission="com.oplus.permission.safe.ASSISTANT"
+            android:exported="true"
+            android:authorities="com.oplus.battery.oassist">
+            <intent-filter>
+                <action android:name="com.oplus.seedling.action.SEEDLING_SERVICE"/>
+            </intent-filter>
+            <meta-data
+                android:name="oplus.seedling.provider"
+                android:value="config_close_auto_enter_power_saving.json;config_open_auto_enter_power_saving.json;config_query_auto_enter_power_saving.json;config_set_auto_into_power_saving_value.json;config_xiaobu_voice.json;config_set_regular_charge_protect_settings.json;config_set_regular_charge_protect_settings.json;config_set_bypass_charge_settings.json"/>
+        </provider>
+        <provider
+            android:name="com.oplus.powermanager.provider.BatteryStatsProvider"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:multiprocess="false"
+            android:authorities="com.oplus.powermanager"
+            android:directBootAware="true"/>
+        <provider
+            android:name="com.oplus.oguard.data.OGuardProvider"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.oplus.oguard.provider"
+            android:directBootAware="true"/>
+        <receiver
+            android:name="com.oplus.powermanager.powerusage.AonHighPowerReceiver"
+            android:permission="com.oplus.permission.safe.AI_APP"
+            android:enabled="true"
+            android:exported="true"/>
+        <receiver
+            android:name="com.oplus.powermanager.highpower.HighPowerReceiver"
+            android:permission="com.oplus.permission.safe.READ_COMMON"
+            android:enabled="true"
+            android:exported="true"/>
+        <receiver
+            android:name="com.oplus.powermanager.powercurve.SaveBatteryStatsReceiver"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="false"
+            android:directBootAware="true"/>
+        <receiver
+            android:name="com.oplus.deepsleep.RestoreNetworkReceiver"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="oplus.intent.action.DEEP_SLEEP_RESTORE_NETWORK"/>
+                <action android:name="oplus.intent.action.idle_maintenance"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.oplus.modulehub.powermode.PowerSaveSwitchReceiver"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.ACTION_SAVEMODE_CONTROL_SYSTEMUI_TO_POWERMANAGER"/>
+                <action android:name="oplus.intent.action.power_saver_on"/>
+                <action android:name="POWER_SAVE_TILE_RECOVER"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.oplus.performance.EapConfigReceiver"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="oplus.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.oplus.performance.GTModeBroadcastReceiver"
+            android:permission="com.oplus.permission.safe.SETTINGS"
+            android:exported="true"/>
+        <receiver
+            android:name="com.oplus.oguard.AppTypeRecheckReceiver"
+            android:permission="com.oplus.permission.safe.READ_COMMON"
+            android:exported="false"/>
+        <receiver
+            android:name="com.oplus.powermanager.chargingProtection.BatterySecretCodeReceiver"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SECRET_CODE"/>
+                <data
+                    android:scheme="android_secret_code"
+                    android:host="588"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.oplus.battery.TermsOfServiceReceiver"
+            android:permission="com.oplus.permission.safe.SETTINGS"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.bootreg.tos.PARTNER_CUSTOMIZATION"/>
+            </intent-filter>
+            <meta-data
+                android:name="com.oplus.bootreg.tos.keyhint"
+                android:value="com.oplus.battery"/>
+            <meta-data
+                android:name="com.oplus.bootreg.tos.order"
+                android:value="185"/>
+            <meta-data
+                android:name="com.oplus.bootreg.tos.title"
+                android:resource="@string/bootreg_permission_title"/>
+            <meta-data
+                android:name="com.oplus.bootreg.tos.summary"
+                android:resource="@string/bootreg_permission_summary"/>
+            <meta-data
+                android:name="com.oplus.bootreg.tos.title.tablet"
+                android:resource="@string/bootreg_permission_title"/>
+            <meta-data
+                android:name="com.oplus.bootreg.tos.summary.tablet"
+                android:resource="@string/bootreg_permission_summary"/>
+        </receiver>
+        <service
+            android:name="com.oplus.remote.policy.RemoteUiClientService"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":ui">
+            <intent-filter>
+                <action android:name="com.oplus.battery.RemoteUiClientService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.remote.policy.RemoteDialogService"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":ui">
+            <intent-filter>
+                <action android:name="com.oplus.battery.RemoteDialogService"/>
+            </intent-filter>
+        </service>
+        <service android:name="com.oplus.ovoiceskillservice.SkillActionsService"/>
+        <service
+            android:name="com.oplus.battery.backup.GuardElfBRPluginService"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.heytap.br.service"/>
+                <category android:name="android.intent.category.default"/>
+            </intent-filter>
+            <meta-data
+                android:name="groupID"
+                android:value="384"/>
+            <meta-data
+                android:name="version"
+                android:value="1"/>
+            <meta-data
+                android:name="isVendorSupport"
+                android:value="true"/>
+            <meta-data
+                android:name="uniqueID"
+                android:value="1110"/>
+        </service>
+        <service
+            android:name="com.oplus.battery.OplusBatteryService"
+            android:permission="com.oplus.permission.safe.READ_COMMON"
+            android:exported="true"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="com.oplus.battery.OplusBatteryService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.battery.RecoverySettingsService"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.battery.RecoverySettingsService"/>
+                <action android:name="oplus.intent.action.settings.RECOVERY_SERVICE"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.remote.policy.RemoteClientService"
+            android:permission="com.oplus.permission.safe.LOG"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.battery.RemoteClientService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.thermalcontrol.trace.ThermalTraceService"
+            android:permission="com.oplus.permission.safe.LOG"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.battery.ThermalTraceService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.remote.policy.SystemResourceService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.battery.SystemResourceService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.remote.policy.SysResAuthService"
+            android:permission="com.oplus.permission.safe.AUTHENTICATE"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oplus.battery.SysResAuthService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:label="@string/wireless_reverse_charging_title"
+            android:icon="@drawable/ic_wireless_reverse_charging"
+            android:name="com.oplus.powermanager.wirelesscharg.WirelessReverseControService"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+        <service
+            android:label="@string/power_save_mode_title"
+            android:icon="@drawable/qs_battery_saver_icon_off"
+            android:name="com.oplus.powermanager.powersave.PowerSaveTileService"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true"/>
+        </service>
+        <service
+            android:label="@string/high_performance_mode"
+            android:icon="@drawable/qs_high_perf_icon_on"
+            android:name="com.oplus.modulehub.powermode.HighPerfTileService"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true"/>
+        </service>
+        <service
+            android:label="@string/rm_gt_mode_tile_title"
+            android:icon="@drawable/ic_gt_icon_black_unactive"
+            android:name="com.oplus.performance.GTModeTile"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+        <service
+            android:label="@string/bypass_charge_mode_title"
+            android:icon="@drawable/ic_bypass_charge"
+            android:name="com.oplus.powermanager.fuelgaue.bypasscharge.BypassChargeTile"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true"/>
+        </service>
+        <service
+            android:name="com.oplus.storage.StorageMonitorDialogService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":ui">
+            <intent-filter>
+                <action android:name="com.oplus.battery.StorageMonitorDialogService"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.oplus.powermanager.wirelesscharg.ChargeAlertService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":ui"
+            android:directBootAware="true"/>
+        <uses-library
+            android:name="com.oplus.statistics"
+            android:required="false"/>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragmentStartup"
+            android:label="@string/startup_task"
+            android:name="com.oplus.startupapp.view.StartupAppListActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:screenOrientation="behind"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.oplus.battery.permission.startup.StartupAppListActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragmentStartup"
+            android:label="@string/startup_task"
+            android:name="com.oplus.startupapp.view.AssociateStartActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:screenOrientation="behind"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.oplus.battery.permission.startup.AssociateStartActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <provider
+            android:name="com.oplus.startupapp.data.StartupProvider"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:authorities="com.oplus.startup.provider"/>
+        <provider
+            android:name="com.oplus.powermanager.powersave.PowerSaveSimpleProvider"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.oplus.battery.powersave.seedling.execute">
+            <intent-filter>
+                <action android:name="com.oplus.battery.powersave.seedling.execute"/>
+            </intent-filter>
+        </provider>
+        <provider
+            android:name="com.oplus.powermanager.powersave.PowerSaveSeedlingCardProvider"
+            android:permission="com.oplus.permission.safe.ASSISTANT"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.oplus.battery.seedling.powersave">
+            <intent-filter>
+                <action android:name="com.oplus.seedling.action.SEEDLING_CARD"/>
+            </intent-filter>
+            <meta-data
+                android:name="oplus.seedling.provider"
+                android:value="powersave.upk"/>
+        </provider>
+        <provider
+            android:name="com.oplus.powermanager.chargeSeedling.ChargeSeedlingCardProvider"
+            android:permission="com.oplus.permission.safe.ASSISTANT"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.oplus.battery.seedling.charge">
+            <intent-filter>
+                <action android:name="com.oplus.seedling.action.SEEDLING_CARD"/>
+            </intent-filter>
+            <meta-data
+                android:name="oplus.seedling.provider"
+                android:value="ChargeSeedling.upk"/>
+        </provider>
+        <provider
+            android:name="com.oplus.powermanager.provider.DozePermissionProvider"
+            android:permission="com.oplus.permission.safe.APP_MANAGER"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.oplus.protection.doze.permission.provider"/>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragmentStartup"
+            android:label="@string/startup_task"
+            android:name="com.oplus.startupapp.view.PreventRecordActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:screenOrientation="behind"
+            android:configChanges="screenSize|orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="com.oplus.battery.permission.startup.LaunchRecordActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:theme="@style/AppNoTitleTheme.PreferenceFragmentStartup"
+            android:label="@string/startup_task"
+            android:name="com.oplus.startupapp.view.OptimizationAutoStartActivity"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true"
+            android:process=":ui"
+            android:screenOrientation="behind"
+            android:configChanges="screenSize|orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="safe.intent.action.OPT_AUTO_APP_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <receiver
+            android:name="com.oplus.startupapp.StartupStaticReceiver"
+            android:permission="oplus.permission.OPLUS_COMPONENT_SAFE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="androidx.room.MultiInstanceInvalidationService"
+            android:exported="false"
+            android:directBootAware="true"/>
+        <service
+            android:name="com.oplus.startupapp.OTAInitListService"
+            android:permission="com.oplus.startupapp.permission.OTA_INIT_SERVICE"
+            android:exported="true"
+            android:process=":remote"
+            android:directBootAware="true"/>
+        <uses-library
+            android:name="androidx.window.extensions"
+            android:required="false"/>
+        <uses-library
+            android:name="androidx.window.sidecar"
+            android:required="false"/>
+        <provider
+            android:name="com.oplus.epona.internal.EponaProvider"
+            android:permission="com.oplus.permission.safe.SECURITY"
+            android:exported="true"
+            android:multiprocess="true"
+            android:authorities="com.oplus.battery.oplus.epona"
+            android:directBootAware="true"/>
+        <meta-data
+            android:name="com.oplus.epona:epona"
+            android:value="2.4.0"/>
+        <meta-data
+            android:name="dependencies:implementation:com.oplus.appprovider:settings"
+            android:value="2.1.6"/>
+        <uses-library
+            android:name="vendor-oplus-hardware-cryptoeng-V1.0"
+            android:required="false"/>
+        <meta-data
+            android:name="coui.support.appcompat.version"
+            android:value="16.0.10-alpha011321b"/>
+        <provider
+            android:name="com.oplus.pantanal.seedling.file.provider.FileShareProvider"
+            android:readPermission="com.oplus.permission.safe.ASSISTANT"
+            android:enabled="true"
+            android:exported="false"
+            android:authorities="com.oplus.battery.FileShareProvider"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_file_paths"/>
+        </provider>
+        <meta-data
+            android:name="cardwidget.support.client.version.code"
+            android:value="2000008"/>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:exported="false"
+            android:authorities="com.oplus.battery.androidx-startup">
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                android:value="androidx.startup"/>
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup"/>
+            <meta-data
+                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+                android:value="androidx.startup"/>
+        </provider>
+        <meta-data
+            android:name="com.oplus.support:api-adapter"
+            android:value="13.1.0"/>
+        <receiver
+            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+            android:permission="android.permission.DUMP"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="false">
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.SKIP_FILE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION"/>
+            </intent-filter>
+        </receiver>
+        <provider
+            android:name="com.oplus.tingle.ipc.internal.TingleProvider"
+            android:exported="false"
+            android:multiprocess="true"
+            android:authorities="com.oplus.battery.tingle"
+            android:directBootAware="true"/>
+        <meta-data
+            android:name="com.oplus.tingle:tingle"
+            android:value="3.1.0"/>
+        <meta-data
+            android:name="dependencies:implementation:com.oplus.utils:reflect"
+            android:value="2.1.1"/>
+    </application>
+</manifest>
