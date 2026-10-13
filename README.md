@@ -319,21 +319,6 @@ Advantages:
 - Fully automated through ADB
 ```
 
-Also, one small GitHub tip: keep the `Battery.apk` and `battery_src` analysis in a separate folder like:
-
-```text
-research/
-├── Battery.apk
-└── battery_src/
-```
-
-and keep the main project clean:
-
-```text
-bypassd/
-├── bypassd
-├── bypassd.service
-├── README.md
 └── LICENSE
 ```
 
