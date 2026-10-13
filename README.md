@@ -317,9 +317,3 @@ Advantages:
 - Less fragile after OxygenOS updates
 - No root required
 - Fully automated through ADB
-```
-
-└── LICENSE
-```
-
-That separation makes it look much more like an actual reverse-engineering project instead of a random script dump.
