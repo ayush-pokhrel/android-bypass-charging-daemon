@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+#
+# bypassd - automatic OnePlus/OPlus Bypass Charging over ADB
+#
+# Watches for an Android device on ADB and, on each new connection, applies
+# the configured bypass-charging limit and state via Settings.System.
+#
+# Configuration is read from environment variables (see bypassd.conf.example):
+#   BYPASSD_LIMIT          Charge limit: 20, 40, 60 or 80      (default: 80)
+#   BYPASSD_STATE          1 = enable bypass, 0 = disable      (default: 1)
+#   BYPASSD_SERIAL         ADB serial to target (needed only if several
+#                          devices are attached)               (default: unset)
+#   BYPASSD_CONNECT_DELAY  Seconds to wait after a new connection (default: 3)
+#   BYPASSD_POLL_INTERVAL  Seconds between connection checks      (default: 2)
+#
+# License: MIT
+
+# Note: -e is intentionally not set. A daemon must survive transient ADB
+# failures (cable pulled, device rebooting) instead of exiting.
+set -uo pipefail
+
+readonly PROG="bypassd"
+readonly EX_CONFIG=78 # sysexits.h: configuration error (not retried by systemd)
+
+LIMIT="${BYPASSD_LIMIT:-80}"
+STATE="${BYPASSD_STATE:-1}"
+SERIAL="${BYPASSD_SERIAL:-}"
+CONNECT_DELAY="${BYPASSD_CONNECT_DELAY:-3}"
+POLL_INTERVAL="${BYPASSD_POLL_INTERVAL:-2}"
+
+log() { printf '[%s] %s\n' "$PROG" "$*"; }
+die() {
+  log "error: $*" >&2
+  exit "$EX_CONFIG"
+}
+
+# --- Validation ---------------------------------------------------------------
+
+command -v adb >/dev/null 2>&1 || die "adb not found in PATH"
+
+case "$LIMIT" in
+  20 | 40 | 60 | 80) ;;
+  *) die "BYPASSD_LIMIT must be one of 20, 40, 60, 80 (got '$LIMIT')" ;;
+esac
+
+case "$STATE" in
+  0 | 1) ;;
+  *) die "BYPASSD_STATE must be 0 or 1 (got '$STATE')" ;;
+esac
+
+[[ "$CONNECT_DELAY" =~ ^[0-9]+$ ]] || die "BYPASSD_CONNECT_DELAY must be a whole number"
+[[ "$POLL_INTERVAL" =~ ^[1-9][0-9]*$ ]] || die "BYPASSD_POLL_INTERVAL must be a positive whole number"
+
+adb_cmd=(adb)
+[[ -n "$SERIAL" ]] && adb_cmd+=(-s "$SERIAL")
+
+# --- Helpers ------------------------------------------------------------------
+
+get_setting() {
+  "${adb_cmd[@]}" shell settings get system "$1" 2>/dev/null | tr -d '\r'
+}
+
+put_setting() {
+  "${adb_cmd[@]}" shell settings put system "$1" "$2" >/dev/null 2>&1
+}
+
+# apply_setting KEY WANTED
+# Writes only when the value differs, then reads it back to verify.
+apply_setting() {
+  local key="$1" want="$2" current
+
+  current="$(get_setting "$key")"
+  if [[ "$current" == "$want" ]]; then
+    log "$key already set to $want"
+    return 0
+  fi
+
+  log "setting $key: ${current:-unset} -> $want"
+  if ! put_setting "$key" "$want"; then
+    log "warning: failed to write $key"
+    return 1
+  fi
+
+  current="$(get_setting "$key")"
+  if [[ "$current" != "$want" ]]; then
+    log "warning: $key reads back as '${current:-unset}', expected '$want'"
+    return 1
+  fi
+}
+
+count_devices() {
+  adb devices 2>/dev/null | awk 'NR > 1 && $2 == "device" { n++ } END { print n + 0 }'
+}
+
+nap() {
+  # Interruptible sleep so SIGTERM from systemd is handled immediately.
+  sleep "$1" &
+  wait $!
+}
+
+trap 'log "stopping"; exit 0' INT TERM
+
+# --- Main loop ----------------------------------------------------------------
+
+log "started (limit=${LIMIT}%, state=${STATE}${SERIAL:+, serial=$SERIAL})"
+
+last_state=""
+warned_multi=0
+
+while true; do
+  current_state="$("${adb_cmd[@]}" get-state 2>/dev/null || true)"
+
+  if [[ -z "$current_state" && -z "$SERIAL" && "$warned_multi" -eq 0 ]]; then
+    if (($(count_devices) > 1)); then
+      log "warning: multiple devices attached; set BYPASSD_SERIAL to choose one"
+      warned_multi=1
+    fi
+  elif [[ "$current_state" == "device" ]]; then
+    warned_multi=0
+  fi
+
+  if [[ "$current_state" == "device" && "$last_state" != "device" ]]; then
+    log "device connected"
+    nap "$CONNECT_DELAY"
+
+    if apply_setting bypass_charge_value "$LIMIT" &&
+      apply_setting bypass_charge_state "$STATE"; then
+      log "done"
+    else
+      log "could not apply settings; will retry"
+      current_state="" # force a retry on the next iteration
+    fi
+  fi
+
+  last_state="$current_state"
+  nap "$POLL_INTERVAL"
+done

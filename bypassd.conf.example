@@ -1,0 +1,21 @@
+# bypassd configuration
+#
+# Copy to ~/.config/bypassd/bypassd.conf and restart the service:
+#   systemctl --user restart bypassd.service
+#
+# Plain KEY=value lines only (systemd EnvironmentFile format).
+
+# Charge limit in percent. Allowed: 20, 40, 60, 80
+BYPASSD_LIMIT=80
+
+# 1 = enable bypass charging, 0 = disable
+BYPASSD_STATE=1
+
+# Only needed when more than one device is attached. Find yours with `adb devices`.
+#BYPASSD_SERIAL=
+
+# Seconds to wait after a device connects before writing settings
+#BYPASSD_CONNECT_DELAY=3
+
+# Seconds between connection checks
+#BYPASSD_POLL_INTERVAL=2
